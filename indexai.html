@@ -1,150 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Campus Assistant Chatbot</title>
-    <style>
-        body {
-            background: #f2f5fa;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .chat-container {
-            width: 350px;
-            margin: 50px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-header {
-            background: #276ef1;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.3em;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-        .chat-messages {
-            flex: 1;
-            padding: 18px;
-            max-height: 280px;
-            overflow-y: auto;
-            background: #f7fafc;
-        }
-        .message.user {
-            text-align: right;
-            margin-bottom: 10px;
-        }
-        .message.bot {
-            text-align: left;
-            margin-bottom: 10px;
-        }
-        .message-content {
-            display: inline-block;
-            padding: 10px 18px;
-            border-radius: 20px;
-            max-width: 80%;
-            font-size: 1em;
-        }
-        .message.user .message-content {
-            background: #276ef1;
-            color: #fff;
-        }
-        .message.bot .message-content {
-            background: #eaf1ff;
-            color: #222;
-        }
-        .chat-input {
-            display: flex;
-            border-top: 1px solid #eee;
-            padding: 12px;
-            background: #fff;
-        }
-        .chat-input input {
-            flex: 1;
-            border: none;
-            padding: 10px 12px;
-            border-radius: 18px;
-            font-size: 1em;
-            outline: none;
-        }
-        .chat-input button {
-            background: #276ef1;
-            color: #fff;
-            border: none;
-            border-radius: 18px;
-            font-size: 1em;
-            padding: 0 18px;
-            margin-left: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .chat-input button:hover {
-            background: #174ec3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>CodeLearn: Interactive Coding Platform</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f2f3f8; }
+    #header { background: #283593; color: white; padding: 12px; text-align: center; }
+    #main { max-width: 900px; margin: 30px auto; background: white; box-shadow: 0 0 10px #bbb; padding: 30px; }
+    #editor { width: 100%; height: 170px; font-family: 'Fira Mono', monospace; font-size: 16px; }
+    #output { background: #212121; color: #fdf6e3; padding: 16px; min-height: 36px; margin-top: 20px; }
+    #feedback { color: #c62828; margin-top: 12px; }
+    button { background: #1976d2; color: white; border: none; padding: 10px 20px; margin-top: 8px; cursor: pointer; }
+    .exercise-box { margin-top: 30px; background: #eff3fb; border-left: 4px solid #1976d2; padding: 18px; }
+    .correct { color: #2e7d32; }
+  </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            Smart Campus Assistant
-        </div>
-        <div class="chat-messages" id="messages">
-            <div class="message bot">
-                <div class="message-content">Hi! How can I help you with your campus queries today?</div>
-            </div>
-        </div>
-        <form class="chat-input" id="chatForm">
-            <input type="text" id="userInput" placeholder="Type your question..." autocomplete="off">
-            <button type="submit">Send</button>
-        </form>
+  <div id="header">
+    <h1>CodeLearn</h1>
+    <p>Learn, Practice, and Debug JavaScript</p>
+  </div>
+  <div id="main">
+    <div class="exercise-box" id="exercise">
+      <strong>Exercise:</strong> Write a function that returns the sum of two numbers.<br>
+      <em>Example:</em> <code>sum(2, 3)</code> should return <code>5</code>.
     </div>
-    <script>
-        const messages = document.getElementById('messages');
-        const chatForm = document.getElementById('chatForm');
-        const userInput = document.getElementById('userInput');
+    <textarea id="editor">// Write your code here!
+function sum(a, b) {
+  return a + b;
+}
+</textarea>
+    <button onclick="runCode()">Run Code</button>
+    <button onclick="analyzeCode()">Analyze</button>
+    <div id="output"></div>
+    <div id="feedback"></div>
+  </div>
+  <script>
+    // Run user code and show output/result
+    function runCode() {
+      let code = document.getElementById("editor").value;
+      let outputDiv = document.getElementById("output");
+      let feedbackDiv = document.getElementById("feedback");
+      outputDiv.innerHTML = '';
+      feedbackDiv.innerHTML = '';
+      try {
+        // attempting to execute user code securely
+        let func = new Function(code + "; output = sum(2,3);");
+        let output;
+        func();
+        outputDiv.innerHTML = "sum(2, 3) = " + output;
+        if (output === 5) {
+          feedbackDiv.innerHTML = "<span class='correct'>Great job! Your function works as expected.</span>";
+        } else {
+          feedbackDiv.textContent = "The result is not correct for sum(2, 3).";
+        }
+      } catch (e) {
+        // error detection and feedback
+        feedbackDiv.textContent = "Error: " + e.message;
+      }
+    }
 
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const text = userInput.value.trim();
-            if (!text) return;
-            // Show user message
-            const userMsg = document.createElement('div');
-            userMsg.className = 'message user';
-            userMsg.innerHTML = <div class="message-content">${text}</div>;
-            messages.appendChild(userMsg);
-
-            // Default bot reply (for demo purposes)
-            setTimeout(() => {
-                let reply = "Sorry, I am a demo bot! Please ask about admissions, events, results, or faculty.";
-                if (text.toLowerCase().includes('admission')) {
-                    reply = "Admissions open from May 10th to June 30th. Visit the college website for details.";
-                }
-                if (text.toLowerCase().includes('events')) {
-                    reply = "Upcoming event: TechFest on 24th September. Registrations are open!";
-                }
-                if (text.toLowerCase().includes('faculty')) {
-                    reply = "You can contact faculty via the college directory on the official website.";
-                }
-                if (text.toLowerCase().includes('results')) {
-                    reply = "Results will be announced on September 15th. Check your student portal.";
-                }
-                const botMsg = document.createElement('div');
-                botMsg.className = 'message bot';
-                botMsg.innerHTML = <div class="message-content">${reply}</div>;
-                messages.appendChild(botMsg);
-                messages.scrollTop = messages.scrollHeight;
-            }, 700);
-
-            userInput.value = '';
-            messages.scrollTop = messages.scrollHeight;
-        });
-    </script>
+    // Analyze code for syntax hints, errors, and suggestions
+    function analyzeCode() {
+      let code = document.getElementById("editor").value;
+      let feedbackDiv = document.getElementById("feedback");
+      feedbackDiv.innerHTML = '';
+      // Simple code hint: check if a function named 'sum' exists
+      if (!/function\s+sum\s*\(/.test(code)) {
+        feedbackDiv.textContent = "Hint: Did you define a function named 'sum'?";
+        return;
+      }
+      // Check for return statement
+      if (!/return\s+/.test(code)) {
+        feedbackDiv.textContent = "Hint: Did you remember to use a return statement in your function?";
+        return;
+      }
+      feedbackDiv.innerHTML = "No syntax issues found. Ready to test your code!";
+    }
+  </script>
 </body>
 </html>
